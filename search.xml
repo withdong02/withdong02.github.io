@@ -4,7 +4,47 @@
   
     
     <entry>
-      <title>初始序列化与反序列化</title>
+      <title>遇到的奇葩BUG</title>
+      <link href="/2025/08/02/%E9%81%87%E5%88%B0%E7%9A%84%E5%A5%87%E8%91%A9BUG/"/>
+      <url>/2025/08/02/%E9%81%87%E5%88%B0%E7%9A%84%E5%A5%87%E8%91%A9BUG/</url>
+      
+        <content type="html"><![CDATA[<p>此篇博客记录我学习过程中遇到的奇葩BUG</p><h2 id="SpringBoot项目启动失败"><a href="#SpringBoot项目启动失败" class="headerlink" title="SpringBoot项目启动失败"></a><code>SpringBoot</code>项目启动失败</h2><p><img src="https://dongimagehost-1356670526.cos.ap-nanjing.myqcloud.com/2025/07/image-20250801212248493.png" alt="image-20250801212248493"></p><p>如上图，<code>SpringBoot</code>项目启动失败。</p><p>虽然说是端口占用，但我执行相关命令后没有任何输出，修改启动端口不行，尝试了很多办法都未成功，那只好使出我的终极大招：重启idea。还是不行。幸好我还有终极终极大招：重启电脑。嘿，你猜怎么着，成了！🤣</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> BUG </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>正则表达式</title>
+      <link href="/2025/07/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+      <url>/2025/07/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+      
+        <content type="html"><![CDATA[<h2 id="简要介绍"><a href="#简要介绍" class="headerlink" title="简要介绍"></a>简要介绍</h2><p>当你在网站上填写个人信息，遇到电子邮箱一栏，你乱写一通填了个<code>iloveyou</code>，结果网站提示你格式错误。那么网站如何知道你填写的就是邮箱呢，答案就是<strong>正则表达式</strong>。</p><p><a href="https://deerchao.cn/tutorials/regex/diffs.html">正则表达式引擎&#x2F;风味对比</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> JavaSE </tag>
+            
+            <tag> 正则表达式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>初识序列化与反序列化</title>
       <link href="/2025/07/07/%E5%88%9D%E8%AF%86%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
       <url>/2025/07/07/%E5%88%9D%E8%AF%86%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</url>
       
@@ -20,24 +60,11 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 序列化 </tag>
             
+            <tag> JavaSE </tag>
+            
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2025/06/09/hello-world/"/>
-      <url>/2025/06/09/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     
