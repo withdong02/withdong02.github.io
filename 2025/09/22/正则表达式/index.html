@@ -1,0 +1,328 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>正则表达式 | withdong02</title><meta name="author" content="withdong02"><meta name="copyright" content="withdong02"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="介绍正则表达式（regular expression），常简写为regex，用简单字符串来描述、匹配文中全部匹配指定格式的字符串。人话讲就是根据一些规则制定一个字符串，然后你可以用这个字符串来筛选满足规则的字符串。许多程序设计语言都支持用正则表达式操作字符串，这里主要介绍正则表达式在Java中的运用。 不同编程语言的正则表达式引擎有所不同，这里提供一个链接，里面详细介绍了不同语言对各种特性的支持程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="http://withdong02.github.io/2025/09/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="withdong02">
+<meta property="og:description" content="介绍正则表达式（regular expression），常简写为regex，用简单字符串来描述、匹配文中全部匹配指定格式的字符串。人话讲就是根据一些规则制定一个字符串，然后你可以用这个字符串来筛选满足规则的字符串。许多程序设计语言都支持用正则表达式操作字符串，这里主要介绍正则表达式在Java中的运用。 不同编程语言的正则表达式引擎有所不同，这里提供一个链接，里面详细介绍了不同语言对各种特性的支持程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://withdong02.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2025-09-22T08:40:40.000Z">
+<meta property="article:modified_time" content="2025-09-22T14:19:27.523Z">
+<meta property="article:author" content="withdong02">
+<meta property="article:tag" content="JavaSE">
+<meta property="article:tag" content="正则表达式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://withdong02.github.io/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "正则表达式",
+  "url": "http://withdong02.github.io/2025/09/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/",
+  "image": "http://withdong02.github.io/img/avatar.jpg",
+  "datePublished": "2025-09-22T08:40:40.000Z",
+  "dateModified": "2025-09-22T14:19:27.523Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "withdong02",
+      "url": "http://withdong02.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://withdong02.github.io/2025/09/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?82ba157bde5e9a19325c71124d13a2e5";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":2,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '正则表达式',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章:</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/top_img.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"></a><a class="nav-page-title" href="/"><span class="site-name">正则表达式</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章:</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">正则表达式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-22T08:40:40.000Z" title="发表于 2025-09-22 16:40:40">2025-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-22T14:19:27.523Z" title="更新于 2025-09-22 22:19:27">2025-09-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="leancloud_visitors" id="/2025/09/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" data-flag-title="正则表达式"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span class="leancloud-visitors-count"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>正则表达式（regular expression），常简写为regex，用简单字符串来描述、匹配文中全部匹配指定格式的字符串。人话讲就是根据一些规则制定一个字符串，然后你可以用这个字符串来筛选满足规则的字符串。许多程序设计语言都支持用正则表达式操作字符串，这里主要介绍正则表达式在Java中的运用。</p>
+<p>不同编程语言的正则表达式引擎有所不同，这里提供一个<a target="_blank" rel="noopener" href="https://deerchao.cn/tutorials/regex/diffs.html">链接</a>，里面详细介绍了不同语言对各种特性的支持程度。</p>
+<h2 id="快速使用"><a href="#快速使用" class="headerlink" title="快速使用"></a>快速使用</h2><p>先说明一下<code>\</code>的使用。</p>
+<p>在Java普通字符串中，反斜杠<code>\</code>本身就是转义字符，比如<code>\n</code>被转义为”换行符”，又比如<code>\\</code>被转义为<code>\</code>。而正则表达式也有自己的语法，它也使用反斜杠作为转义字符，比如<code>\d</code>表示“匹配一个数字”。</p>
+<p>那么二者结合起来呢🧐。以<code>&quot;\\d&quot;</code>为例。编译器看到字符串<code>&quot;\\d&quot;</code>会根据字符串规则将其转换为两个字符，一个<code>\</code>，一个<code>d</code>。接下来正则表达式引擎会对其进行解析，最终生效的正则模式就是<code>\d</code>。可以这样理解：<strong>正则表达式需要 <code>\d</code> 来匹配数字。但在Java字符串里，一个 <code>\</code> 需要写成 <code>\\</code>。所以，要把正则的 <code>\d</code> 放到Java字符串里，就变成了 <code>\\d</code>。</strong></p>
+<p>到底需不需要两个<code>\\</code>，idea会给你答案。</p>
+<p><code>java.util.regex</code>包是Java标准库中用于支持正则表达式操作的包，主要涉及到<code>Pattern</code>和<code>Matcher</code>这两个类的操作。这里有个简单的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">pattern</span> <span class="operator">=</span> <span class="string">&quot;java\\d&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">text1</span> <span class="operator">=</span> <span class="string">&quot;java1&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">text2</span> <span class="operator">=</span> <span class="string">&quot;javaBad&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">Pattern</span> <span class="variable">p</span> <span class="operator">=</span> Pattern.compile(pattern);</span><br><span class="line"></span><br><span class="line"><span class="type">Matcher</span> <span class="variable">m</span> <span class="operator">=</span> p.matcher(text1);</span><br><span class="line">System.out.println(m.matches());<span class="comment">//true</span></span><br><span class="line">m = p.matcher(text2);</span><br><span class="line">System.out.println(m.matches());<span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+
+<p>先调用<code>Pattern</code>类的静态方法<code>compile</code>（参数为正则表达式）生成一个实例对象，通过调用该对象的<code>matcher</code>方法（参数为待匹配文本）生成一个<code>Matcher</code>实例。接下来就有很多方法供你选择，这里我调用的是<code>matches</code>方法来输出布尔值，在例子中体现为字符串Java后面能否匹配上数字。<code>Matcher</code>类里还有个<code>find</code>方法也很常见，下文会提到。</p>
+<h2 id="匹配规则详解"><a href="#匹配规则详解" class="headerlink" title="匹配规则详解"></a>匹配规则详解</h2><h3 id="简单匹配"><a href="#简单匹配" class="headerlink" title="简单匹配"></a>简单匹配</h3><p>为方便演示，接下来的示例代码使用<code>String</code>类的<code>matches</code>方法，该方法底层原理仍然是<code>Pattern</code>和<code>Matcher</code>这两个类的使用，后面有详细说明。下面示例参考<a target="_blank" rel="noopener" href="https://liaoxuefeng.com/books/java/reg-exp/match-rules/index.html">廖雪峰</a>和<a target="_blank" rel="noopener" href="https://www.runoob.com/java/java-regular-expressions.html">菜鸟教程</a>。</p>
+<p><strong>匹配任意字符：</strong><code>.</code>可以匹配除<code>\r\n</code>之外的任何单个字符。如<code>a.c</code>可以匹配<code>abc</code>但不能匹配<code>abbc</code>和<code>ac</code></p>
+<p><strong>匹配数字：</strong><code>\d</code>匹配 0~9 的数字，同样只匹配一个字符。<strong>匹配非数字：</strong><code>\D</code>匹配非数字。</p>
+<p><strong>匹配常用字符：</strong><code>\w</code>可以匹配一个字母、数字或下划线</p>
+<p><strong>匹配空格字符：</strong><code>\s</code>可以匹配任何空白字符，包括空格、制表符、换页符等。与<code>[\f\n\r\t\v]</code>等效。<code>\W</code>和<code>\S</code>和<code>\D</code>同样是反着来的。</p>
+<p><strong>重复匹配：</strong></p>
+<p><code>*</code>可以匹配任意个字符，包括0个字符。</p>
+<p><code>+</code>可以匹配至少一个字符。比如<code>A\d+</code>可以匹配<code>A11111</code>和<code>A0</code>。但不能匹配<code>A</code>,因为至少一个字符。</p>
+<p><code>?</code>可以匹配0个或一个字符。</p>
+<p>如果想精确指定n个字符，使用<code>&#123;n&#125;</code>，比如<code>A\d&#123;3&#125;</code>可以匹配到<code>A123</code>。指定匹配n~m个字符，用<code>&#123;n,m&#125;</code>， 例如<code>A\d&#123;3,5&#125;</code>可以精确匹配<code>A123</code> <code>A1234</code> <code>A12345</code>。<code>&#123;n,&#125;</code>表示可以匹配至少n个字符。m和n为非负整数，其中n &lt;&#x3D; m。再举一个例子:<code>o&#123;2&#125;</code>和Bob中的一个o不匹配，而匹配food中的两个o。<strong>不同表达式可能是等效的，比如<code>o&#123;0,1&#125;</code>和<code>o?</code></strong></p>
+<p>来个综合点的例子：假如电话号码规则如下:3<del>4位数字表示区位，7</del>8位数字表示电话，中间用<code>-</code>连接。答案：<code>\\d&#123;3,4&#125;-\\d&#123;7,8&#125;</code>。对于连字符<code>-</code>，一般情况下只是一个普通字符，不需要进行转义，当然写上两个反斜杠也是对的，idea会给出提示移除多余的反斜杠。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">pattern</span> <span class="operator">=</span> <span class="string">&quot;\\d&#123;3,4&#125;-\\d&#123;7,8&#125;&quot;</span>;<span class="comment">//不知道需不需要写\？idea会给你的答案</span></span><br><span class="line"><span class="type">String</span> <span class="variable">text1</span> <span class="operator">=</span> <span class="string">&quot;0123-123456&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">text2</span> <span class="operator">=</span> <span class="string">&quot;010-1234567&quot;</span>;</span><br><span class="line">System.out.println(text1.matches(pattern));<span class="comment">//false</span></span><br><span class="line">System.out.println(text2.matches(pattern));<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="复杂匹配："><a href="#复杂匹配：" class="headerlink" title="复杂匹配："></a>复杂匹配：</h3><p><strong>匹配开头和结尾：</strong><code>^</code>匹配输入字符串开始的位置，<code>$</code>匹配输入字符串结束的位置。他们俩的作用是将匹配过程限制在整个字符串上，避免了在子串中成功匹配的情况。其实<code>matches()</code>方法的行为已经隐含了<code>^...$</code>锚点的效果，而<code>find()</code>方法则没有。matches方法尝试将整个输入序列与模式匹配，而find方法会在输入序列中查找下一个与模式匹配的子序列。仔细品味这两个方法的名字，你也许会理解。</p>
+<p><strong>匹配指定范围：</strong><code>[xyz]</code>匹配包含的任一字符，比如<code>[abc]</code>匹配<code>plain</code>中的 a。<code>[a-z]</code></p>
+<p>匹配 a 到 z 范围内的任何小写字母。<code>[^a-z]</code>匹配任何不在 a 到 z 范围内的字符，取补集的意思，和前面的<code>\b</code>，<code>\B</code>类似。<code>[0-9]</code>和<code>[A-Z]</code>同样理解。</p>
+<p>如果要匹配6位十六进制数，可以这样写：<code>[0-9a-fA-F]&#123;6&#125;</code></p>
+<p><strong>或规则匹配：</strong><code>AB|CD</code>表示可以匹配 AB 或 CD。<code>(z|f)ood</code>匹配 zood 或 food，当然这个正则表达式也可以写成<code>[zf]ood</code>。</p>
+<p>**分组匹配：**字面意思，通过()将表达式分组处理，可以配合<code>Matcher</code>类的<code>group</code>方法使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Pattern</span> <span class="variable">p</span> <span class="operator">=</span> Pattern.compile(<span class="string">&quot;(\\d&#123;3,4&#125;)\\-(\\d&#123;7,8&#125;)&quot;</span>);</span><br><span class="line"><span class="type">Matcher</span> <span class="variable">m</span> <span class="operator">=</span> p.matcher(<span class="string">&quot;010-12345678&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (m.matches()) &#123;</span><br><span class="line">	<span class="type">String</span> <span class="variable">g1</span> <span class="operator">=</span> m.group(<span class="number">1</span>);</span><br><span class="line">	<span class="type">String</span> <span class="variable">g2</span> <span class="operator">=</span> m.group(<span class="number">2</span>);</span><br><span class="line">	System.out.println(g1); <span class="comment">// 010</span></span><br><span class="line">	System.out.println(g2); <span class="comment">// 12345678</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>非贪婪匹配：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Pattern</span> <span class="variable">pattern</span> <span class="operator">=</span> Pattern.compile(<span class="string">&quot;(\\d+)(0*)&quot;</span>);</span><br><span class="line"><span class="type">Matcher</span> <span class="variable">matcher</span> <span class="operator">=</span> pattern.matcher(<span class="string">&quot;1230000&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (matcher.matches()) &#123;</span><br><span class="line">	System.out.println(<span class="string">&quot;group1=&quot;</span> + matcher.group(<span class="number">1</span>)); <span class="comment">// &quot;1230000&quot;</span></span><br><span class="line">	System.out.println(<span class="string">&quot;group2=&quot;</span> + matcher.group(<span class="number">2</span>)); <span class="comment">// &quot;&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>观察这个例子，第二个输出空字符串，输出没问题，因为<code>\d+</code>可以匹配到后面的数字。正则表达式默认使用贪婪匹配，以<code>\d+</code>为例，后面有多少数字就匹配多少（只要连续），这样<code>0*</code>就匹配到空字符串。如果想让<code>\d+</code>少匹配，可以写成<code>(\\d+?)(0*)</code>，<code>?</code>表示非贪婪匹配，这样输出就变成了<code>&quot;123&quot; &quot;0000&quot;</code>。</p>
+<p>不能简单的把非贪婪匹配认为最少匹配，觉得输出应该是<code>1</code>和<code>230000</code>。非贪婪匹配是在保证后面表达式都能匹配上的前提下尽量少匹配。引擎保证的是整体成功优先，我认为可以是一种平衡吧，这里不做过多解释，因为更深层的原理我也不懂。</p>
+<p>这里的<code>?</code>和前面提到的<code>?</code>不一样。<code>(\d??)(9*)</code>，<code>\d?</code>表示匹配0个或1个数字，后面的<code>?</code>表示非贪婪匹配。如果给定字符串<code>&quot;9999&quot;</code>，匹配到的两个子串分别为<code>&quot;&quot;</code> <code>&quot;9999&quot;</code></p>
+<h2 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h2><p>**匹配邮箱：**这里假设字符@前可以出现数字、英文字母、下划线和中划线，字符@后是域名格式，长度不限。</p>
+<p>先分析邮箱名称部分，只能出现数字、英文字母和下划线、中划线，那么可以这样写<code>[0-9a-zA-Z_-]</code>，也可以选择<code>\w</code>，这里我选择第二种。又因为不止一个字符，所以加个<code>+</code>。变成<code>\w+</code></p>
+<p>然后分析域名部分，域名一般是<code>weixin.qq.com</code>这种类型，也就是<code>**.**.**</code>。可以以第一个英文句点为分界线将其拆解为两部分。一部分是<code>**</code>一部分是<code>.**</code>的复制粘贴。第一部分依然可以这样写<code>\w+</code>，一个<code>.**</code>这样写<code>\.\w+</code>，多个<code>.**</code>这样写<code>(.\w+)+</code>。</p>
+<p>经过分析，答案就是<code>\w+@\w+(.\w+)+</code>，放到java中，需要写成<code>\\w+@\\w+(.\\w+)+</code>，还是那句话：到底需不需要写反斜杠，idea会给你答案。</p>
+<p>如果你在浏览器搜索“正则表达式邮箱匹配”，你可能会得到很多答案，当你不确定时，多去尝试。</p>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><p><code>Matcher</code>类除了提到的<code>matches</code>方法和<code>find</code>方法，还有<code>start``replaceAll</code>等，可以点击<a target="_blank" rel="noopener" href="https://www.runoob.com/java/java-regular-expressions.html">链接</a>了解更多。这里我想介绍一下<code>Pattern</code>和<code>Matcher</code>这两个类出现的其他地方，比如上文提到的<code>String.matches()</code>方法。</p>
+<p>为什么说<code>String.matches()</code>方法底层原理仍然是<code>Pattern</code>和<code>Matcher</code>这两个类的使用。ctrl+鼠标左键点开方法源码即可发现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">matches</span><span class="params">(String regex)</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> Pattern.matches(regex, <span class="built_in">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现调用的是<code>Pattern</code>类的静态方法<code>matches</code>，同时传进去两个参数，一个正则表达式，一个待匹配字符串。接着点进去matches方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">matches</span><span class="params">(String regex, CharSequence input)</span> &#123;</span><br><span class="line">	<span class="type">Pattern</span> <span class="variable">p</span> <span class="operator">=</span> Pattern.compile(regex);</span><br><span class="line">	<span class="type">Matcher</span> <span class="variable">m</span> <span class="operator">=</span> p.matcher(input);</span><br><span class="line">	<span class="keyword">return</span> m.matches();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就会发现这跟之前的示例代码没啥两样，只是<code>compile</code>和<code>matcher</code>这两个方法的参数不再是字符串常量，而是传进来的参数<code>regex</code>和<code>input</code>。</p>
+<p>再说一个例子，就是<code>String.split()</code>方法。简单说一下：这个方法最终调用的是<code>String</code>类的<code>private String[] split(String regex, int limit, boolean withDelimiters) &#123;...&#125;</code>这个方法，可以看到传进去一个正则表达式作为参数，这个方法的最后几行代码是这样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Pattern</span> <span class="variable">pattern</span> <span class="operator">=</span> Pattern.compile(regex);</span><br><span class="line"><span class="keyword">return</span> withDelimiters</span><br><span class="line">	? pattern.splitWithDelimiters(<span class="built_in">this</span>, limit)</span><br><span class="line">	: pattern.split(<span class="built_in">this</span>, limit);</span><br></pre></td></tr></table></figure>
+
+<p>根据参数<code>withDelimiters</code>的布尔值来确定调用对象pattern的哪个方法，其实这两个方法最终调用的还是一个方法，兜兜转转还是回到了<code>Pattern</code>类和<code>Matcher</code>类。</p>
+<p>这篇博客就到这里，错误不可避免，欢迎指正。我会持续更新，欢迎收藏<a target="_blank" rel="noopener" href="https://withdong02.top/">我的网站</a>。</p>
+<p>参考文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://liaoxuefeng.com/books/java/reg-exp/complex-match/index.html">复杂匹配规则 - Java教程 - 廖雪峰的官方网站</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/java/java-regular-expressions.html">Java 正则表达式 | 菜鸟教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43860260/article/details/91417485">Java 正则表达式的用法和实例-CSDN博客</a></li>
+</ul>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaSE/">JavaSE</a><a class="post-meta__tags" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">withdong02</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/withdong02"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/withdong02" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:1115431066@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://dongimagehost-1356670526.cos.ap-nanjing.myqcloud.com/2025/07/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250702163723.jpg" target="_blank" title="WeChat"><i class="fab fa-weixin" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">快速使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">匹配规则详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8C%B9%E9%85%8D"><span class="toc-number">3.1.</span> <span class="toc-text">简单匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E6%9D%82%E5%8C%B9%E9%85%8D%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">复杂匹配：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83"><span class="toc-number">4.</span> <span class="toc-text">实战演练</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E5%B1%95"><span class="toc-number">5.</span> <span class="toc-text">拓展</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/top_img.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2025 By withdong02<div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'rayx1mqj50dmKyQBQ2C4LEkw-gzGzoHsz',
+      appKey: 'i8RBwjtijeRotxTW0wmvPbjN',
+      avatar: 'retro',
+      serverURLs: '',
+      emojiMaps: "",
+      visitor: true,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="蕫,冬,咚" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
