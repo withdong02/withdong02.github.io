@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫雷游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="info-panel">
+                <div class="timer">
+                    <span class="clock-icon">🕐</span>
+                    <span id="timer-display">057</span>
+                </div>
+                <div class="face">
+                    <span id="face-icon">😊</span>
+                    <span id="progress">32%</span>
+                </div>
+                <div class="mines">
+                    <span id="mine-count">099</span>
+                    <span class="mine-icon">💣</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <button id="easy" class="difficulty-btn active">简单</button>
+            <button id="medium" class="difficulty-btn">中等</button>
+            <button id="hard" class="difficulty-btn">困难</button>
+        </div>
+        
+        <div class="game-board" id="game-board">
+            <!-- 游戏网格将在这里动态生成 -->
+        </div>
+        
+        <div class="controls">
+            <button id="new-game" class="control-btn">新游戏</button>
+        </div>
+    </div>
+    <!-- 通关弹窗 -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <h2>恭喜通关！</h2>
+            <img src="wechat.jpg" alt="微信二维码" class="qrcode-img">
+            <p>这是我的微信二维码</p>
+            <button class="close-modal" id="close-modal">关闭</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
