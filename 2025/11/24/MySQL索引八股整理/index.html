@@ -1,0 +1,384 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MySQL索引八股整理 | withdong02</title><meta name="author" content="withdong02"><meta name="copyright" content="withdong02"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="简单介绍一下MySQL中的索引。 索引介绍 索引是数据库中用于加速查询的数据结构，通过对表中某列或多列的值进行排序，可以快速定位所要查找的数据。就像小时候在汉语字典里查字时，会先根据偏旁笔画数找到偏旁，然后根据剩余笔画找到目标字，这比在整个字典中一个一个查找是快很多的。 索引分类 索引有以下分类  索引详细介绍 主键索引： 主键索引用于唯一标识表中的每条记录，其值必须唯一且非空。每个表只允许有一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL索引八股整理">
+<meta property="og:url" content="http://withdong02.top/2025/11/24/MySQL%E7%B4%A2%E5%BC%95%E5%85%AB%E8%82%A1%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="withdong02">
+<meta property="og:description" content="简单介绍一下MySQL中的索引。 索引介绍 索引是数据库中用于加速查询的数据结构，通过对表中某列或多列的值进行排序，可以快速定位所要查找的数据。就像小时候在汉语字典里查字时，会先根据偏旁笔画数找到偏旁，然后根据剩余笔画找到目标字，这比在整个字典中一个一个查找是快很多的。 索引分类 索引有以下分类  索引详细介绍 主键索引： 主键索引用于唯一标识表中的每条记录，其值必须唯一且非空。每个表只允许有一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://withdong02.top/img/avatar.jpg">
+<meta property="article:published_time" content="2025-11-24T07:14:51.000Z">
+<meta property="article:modified_time" content="2025-11-29T14:31:24.244Z">
+<meta property="article:author" content="withdong02">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="八股">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://withdong02.top/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL索引八股整理",
+  "url": "http://withdong02.top/2025/11/24/MySQL%E7%B4%A2%E5%BC%95%E5%85%AB%E8%82%A1%E6%95%B4%E7%90%86/",
+  "image": "http://withdong02.top/img/avatar.jpg",
+  "datePublished": "2025-11-24T07:14:51.000Z",
+  "dateModified": "2025-11-29T14:31:24.244Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "withdong02",
+      "url": "http://withdong02.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://withdong02.top/2025/11/24/MySQL%E7%B4%A2%E5%BC%95%E5%85%AB%E8%82%A1%E6%95%B4%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?82ba157bde5e9a19325c71124d13a2e5";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":2,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL索引八股整理',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章:</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/top_img.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"></a><a class="nav-page-title" href="/"><span class="site-name">MySQL索引八股整理</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章:</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MySQL索引八股整理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-24T07:14:51.000Z" title="发表于 2025-11-24 15:14:51">2025-11-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-29T14:31:24.244Z" title="更新于 2025-11-29 22:31:24">2025-11-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/MySQL/">MySQL</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="leancloud_visitors" id="/2025/11/24/MySQL%E7%B4%A2%E5%BC%95%E5%85%AB%E8%82%A1%E6%95%B4%E7%90%86/" data-flag-title="MySQL索引八股整理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span class="leancloud-visitors-count"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>简单介绍一下<code>MySQL</code>中的索引。</p>
+<h2 id="索引介绍">索引介绍</h2>
+<p>索引是数据库中用于加速查询的数据结构，通过对表中某列或多列的值进行排序，可以快速定位所要查找的数据。就像小时候在汉语字典里查字时，会先根据偏旁笔画数找到偏旁，然后根据剩余笔画找到目标字，这比在整个字典中一个一个查找是快很多的。</p>
+<h2 id="索引分类">索引分类</h2>
+<p>索引有以下分类</p>
+<img src="https://dongimagehost-1356670526.cos.ap-nanjing.myqcloud.com/2025/07/image-20251124152320367.png" alt="image-20251124152320367" style="zoom: 25%;" />
+<h2 id="索引详细介绍">索引详细介绍</h2>
+<h3 id="主键索引：">主键索引：</h3>
+<p>主键索引用于唯一标识表中的每条记录，其值必须唯一且非空。每个表只允许有一个主键索引，一般为表中的自增id。</p>
+<p>创建主键时，数据库会自动生成主键索引。若没有指定主键，<code>MySQL</code>的<code>InnoDB</code>存储引擎会优先选择一个非空的唯一索引作为主键，如果没有符合条件的索引，<code>MySQL</code>会自动生成一个隐藏的聚簇索引。</p>
+<h3 id="唯一索引：">唯一索引：</h3>
+<p>主键索引 = 唯一索引 + 非空，每个表可以有多个唯一索引，同时唯一索引允许值为NULL，这是和主键索引不同的地方。唯一索引强制字段值的唯一性，插入或更新时会触发唯一检查，适用于业务唯一性约束的字段，比如邮箱。在建表定义唯一键时，会自动生成唯一索引。</p>
+<p>键和索引的区别在于键时逻辑概念，而索引是物理实现，在磁盘中有着实际的存储。</p>
+<h3 id="普通索引：">普通索引：</h3>
+<p>普通索引仅用于加速查询，不会限制字段值的唯一性。</p>
+<h3 id="全文索引">全文索引</h3>
+<p>全文索引是<code>MySQL</code>一种优化文本数据检索的特殊类型索引，适用于<code>CHAR, VARCHAR, TEXT</code>等字段。MySQL 5.7 及以上版本内置了 ngram 解析器，可处理中文、日文和韩文等分词。全文索引底层不再是 B+ 树索引。</p>
+<p>建表时通过 <code>FULLTEXT (title, body)</code> 来定义。通过 <code>MATCH(col1, col2) AGAINST('keyword')</code> 进行检索，默认按照降序返回结果，支持布尔模式查询。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>+</code> 表示必须包含；</p>
+</li>
+<li class="lvl-2">
+<p><code>-</code> 表示排除；</p>
+</li>
+<li class="lvl-2">
+<p><code>*</code> 表示通配符；</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 使用布尔模式查询</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> articles </span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">MATCH</span>(title, content) AGAINST(<span class="string">&#x27;+MySQL -Oracle&#x27;</span> <span class="keyword">IN</span> <span class="type">BOOLEAN</span> MODE);</span><br></pre></td></tr></table></figure>
+<p>这样查询性能比<code>LIKE '%keyword%'</code>高很多。对于复杂的中文场景可以用<code>Elasticsearch</code>等专业搜索引擎替代。</p>
+<h3 id="B-树索引：">B+ 树索引：</h3>
+<p>B+ 树是一种高度平衡的多路查找树，能有效降低磁盘的 IO 次数，并且支持有序遍历和范围查询。</p>
+<p>相比普通二叉树，B+ 树可以将亿级数据量控制在3-4层树高，极大减少磁盘的 I/O 次数。因为树越高意味着查找数据时就需要更多的磁盘 IO，因为每一层都可能需要从磁盘加载新的节点。</p>
+<p>相比二叉平衡树，B+ 树每个节点拥有多个子节点，可存储数据更多。</p>
+<p>相比 B 树：B+ 树的非叶子节点只存储键值，叶子节点存储数据并通过链表连接，支持范围查询。这样的好处是非叶子节点不存储数据，就可以存储更多的键值对；叶子节点构成有序链表（双向链表），范围查询时可以直接通过叶子节点间的指针 顺序访问 整个查询范围内的记录，而无需对树进行多次遍历，查询效率高。</p>
+<p><img src="https://dongimagehost-1356670526.cos.ap-nanjing.myqcloud.com/2025/07/image-20251129171723280.png" alt="image-20251129171723280"></p>
+<p>相比哈希表：B+ 树支持范围查询和排序</p>
+<h3 id="哈希索引：">哈希索引：</h3>
+<p>Hash 索引基于哈希函数将键值映射到固定长度的哈希值，通过哈希值定位数据存储的位置，完全无序，只支持等值查找，速度快功能少，常见于 Memory 引擎。</p>
+<p>InnoDB 内部使用了一种名为 “自适应哈希索引” 的技术，当某些索引值频繁访问时，InnoDB 会在 B+ 树基础上自动创建哈希索引，兼具两者的优点。</p>
+<h3 id="聚簇索引与非聚簇索引：">聚簇索引与非聚簇索引：</h3>
+<p>聚簇索引的叶子节点存储了完整的数据行，数据和索引是在一起的，不仅存储了主键值，还存储了其他列的值。</p>
+<p>InnoDB 的主键索引就是聚簇索引，因此按照主键进行查询的速度会非常快。</p>
+<p>每个表只能有一个聚簇索引，通常由主键定义。</p>
+<p>非聚簇索引的叶子节点只包含了索引列和主键值，需要通过<strong>回表</strong>按照主键去聚簇索引查找其他列的值，唯一索引、普通索引等非主键索引都是非聚簇索引。回表通常需要访问额外的数据页，如果数据不在内存中还需要从磁盘读取，增加 I/O 开销。可通过覆盖索引或者联合索引来避免回表。</p>
+<h2 id="补充">补充</h2>
+<h3 id="一棵-B-树能存多少数据：">一棵 B+ 树能存多少数据：</h3>
+<p>一棵 B+ 树能存多少数据，取决于它的分支因子和高度。在 InnoDB 中，页的默认大小为 16KB，当主键为 bigint 时，3 层 B+ 树通常可以存储约 2000 万条数据。</p>
+<h3 id="B-树相比-B-树的三个优势">B+ 树相比 B 树的三个优势</h3>
+<ol>
+<li class="lvl-3">
+<p>B 树的每个节点既存储键值，又存储数据和指针，导致单节点存储的键值数量较少。</p>
+</li>
+<li class="lvl-3">
+<p>B 树的范围查询需要通过中序遍历逐层回溯；而 B+ 树的叶子节点通过双向链表顺序连接，范围查询只需定位起始点后顺序遍历链表即可，没有回溯开销。</p>
+</li>
+<li class="lvl-3">
+<p>B 树的数据可能存储在任意节点，假如目标数据恰好位于根节点或上层节点，查询仅需 1-2 次 I/O；但如果数据位于底层节点，则需多次 I/O，导致查询时间波动较大。</p>
+<p>而 B+ 树的所有数据都存储在叶子节点，查询路径的长度是固定的，时间稳定为 <code>O(logN)</code>(N是数据总量)，对 MySQL 在高并发场景下的稳定性至关重要。</p>
+</li>
+</ol>
+<h3 id="联合索引介绍：">联合索引介绍：</h3>
+<p>前面提到可通过覆盖索引或者联合索引来避免回表。如果一个查询只需要访问索引中已经包含的列，那么这个查询就可以被索引“覆盖”，不需要回表，这就是覆盖索引。至于联合索引就是把多个字段放在一个索引里，必须遵循 “最左前缀” 原则。</p>
+<p>联合索引属于非聚簇索引。与单列索引不同的是，联合索引的每个节点会存储所有索引列的值，而不仅仅是第一列的值。</p>
+<p>关于最左前缀涉及到的一些问题：</p>
+<ol>
+<li class="lvl-3">
+<p>范围查询只能应用于最左前缀的最后一列。范围查询之后的列无法使用索引。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SQL</span><br><span class="line">-- 索引(a,b,c)</span><br><span class="line">SELECT * FROM table <span class="type">WHERE</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">1</span> AND b &gt; <span class="number">2</span> <span class="type">AND</span> <span class="variable">c</span> <span class="operator">=</span> <span class="number">3</span>; </span><br><span class="line">-- 只能使用a和b，c无法使用索引</span><br></pre></td></tr></table></figure>
+</li>
+<li class="lvl-3">
+<p>联合索引在 B+ 树中是按照最左字段优先排序构建的，如果跳过最左字段，MySQL 无法判断查找范围从哪里开始，自然也就无法使用索引。</p>
+</li>
+<li class="lvl-3">
+<p>如果查询模式是后缀通配符 <code>LIKE 'prefix%'</code>，且该字段有索引，优化器通常会使用索引。否则即便是遵循最左前缀匹配，LIKE 字段也无法命中索引。</p>
+</li>
+<li class="lvl-3">
+<p>如果排序(order by)或分组(group by)的列是最左前缀的一部分，索引还可以加速操作。</p>
+</li>
+</ol>
+<h3 id="索引下推：">索引下推：</h3>
+<p>索引下推是指：MySQL 把 WHERE 条件尽可能“下推”到索引扫描阶段，在存储引擎层提前过滤掉不符合条件的记录。</p>
+<p>在传统的查询处理方式中，存储引擎首先根据索引读取数据并将其加载到内存中，然后在内存中应用 WHERE 子句中的过滤条件，筛选出符合条件的数据行。这种方式可能导致大量的数据传输，尤其是当数据量较大时。</p>
+<p>而使用索引下推优化后，存储引擎在存储层就应用 WHERE 子句中的过滤条件，只有符合条件的数据才会被加载到内存中进一步处理。这可以减少数据传输量，从而提高查询效率。</p>
+<h2 id="其他问题">其他问题</h2>
+<h3 id="哪些情况下索引会失效：">哪些情况下索引会失效：</h3>
+<ol>
+<li class="lvl-3">
+<p>对索引列使用函数或表达式会导致索引失效。</p>
+</li>
+<li class="lvl-3">
+<p>LIKE 模糊查询以通配符开头会导致索引失效。</p>
+</li>
+<li class="lvl-3">
+<p>联合索引违反了最左前缀原则，索引会失效。</p>
+</li>
+<li class="lvl-3">
+<p>使用 OR 连接非索引列条件，会导致索引失效。</p>
+</li>
+<li class="lvl-3">
+<p>使用 <code>!=</code> 或 <code>&lt;&gt;</code> 不等值查询会导致索引失效。</p>
+</li>
+</ol>
+<h3 id="创建索引有哪些注意点：">创建索引有哪些注意点：</h3>
+<ol>
+<li class="lvl-3">
+<p>选择合适的字段。比如说频繁出现在 WHERE、JOIN、ORDER BY、GROUP BY 中的字段。优先选择区分度高的字段，比如用户 ID、手机号等唯一值多的，而不是性别、状态等区分度极低的字段，如果真的需要，可以考虑联合索引。</p>
+</li>
+<li class="lvl-3">
+<p>要控制索引的数量，避免过度索引，每个索引都要占用存储空间，单表的索引数量不建议超过 5 个。</p>
+</li>
+<li class="lvl-3">
+<p>联合索引的时候要遵循最左前缀原则。区分度高的字段放在左侧，等值查询的字段优先于范围查询的字段。例如 <code>WHERE A=1 AND B&gt;10 AND C=2</code>，优先 <code>(A, C, B)</code>。</p>
+</li>
+</ol>
+<p>全篇整理自<a target="_blank" rel="noopener" href="https://javabetter.cn/sidebar/sanfene/mysql.html#%E7%B4%A2%E5%BC%95">二哥博客</a>。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a><a class="post-meta__tags" href="/tags/%E5%85%AB%E8%82%A1/">八股</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">withdong02</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/withdong02"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="mailto:1115431066@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="/games/minesweeper.html" target="_blank" title="WeChat"><i class="fab fa-weixin" style="color: #hdhfbb;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">索引介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">索引分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.</span> <span class="toc-text">索引详细介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">主键索引：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">唯一索引：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">普通索引：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95"><span class="toc-number">3.4.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-%E6%A0%91%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.5.</span> <span class="toc-text">B+ 树索引：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.6.</span> <span class="toc-text">哈希索引：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%8E%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.7.</span> <span class="toc-text">聚簇索引与非聚簇索引：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">4.</span> <span class="toc-text">补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E6%A3%B5-B-%E6%A0%91%E8%83%BD%E5%AD%98%E5%A4%9A%E5%B0%91%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">一棵 B+ 树能存多少数据：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-%E6%A0%91%E7%9B%B8%E6%AF%94-B-%E6%A0%91%E7%9A%84%E4%B8%89%E4%B8%AA%E4%BC%98%E5%8A%BF"><span class="toc-number">4.2.</span> <span class="toc-text">B+ 树相比 B 树的三个优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E4%BB%8B%E7%BB%8D%EF%BC%9A"><span class="toc-number">4.3.</span> <span class="toc-text">联合索引介绍：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8%EF%BC%9A"><span class="toc-number">4.4.</span> <span class="toc-text">索引下推：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="toc-number">5.</span> <span class="toc-text">其他问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E7%B4%A2%E5%BC%95%E4%BC%9A%E5%A4%B1%E6%95%88%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">哪些情况下索引会失效：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E6%9C%89%E5%93%AA%E4%BA%9B%E6%B3%A8%E6%84%8F%E7%82%B9%EF%BC%9A"><span class="toc-number">5.2.</span> <span class="toc-text">创建索引有哪些注意点：</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/top_img.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2025 By withdong02<div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'rayx1mqj50dmKyQBQ2C4LEkw-gzGzoHsz',
+      appKey: 'i8RBwjtijeRotxTW0wmvPbjN',
+      avatar: 'retro',
+      serverURLs: '',
+      emojiMaps: "",
+      visitor: true,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="蕫,冬,咚" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
