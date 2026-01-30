@@ -102,23 +102,23 @@
         /* 回收区 - 左下角 */
         .foundation {
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            align-items: center;
             padding: 10px;
-            background: rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.5);
             border-radius: 8px;
         }
 
         .foundation-slot {
-            width: 190px;
-            height: 115px;
+            width: 280px;
+            height: 130px;
             border-radius: 8px;
-            background: rgba(0, 0, 0, 0.15);
             position: relative;
         }
 
         .foundation-slot.completed {
-            border: 2px solid rgba(255, 215, 0, 0.5);
-            background: rgba(255, 215, 0, 0.1);
+            border: none;
+            background: transparent;
         }
 
         .foundation-slot .card {
@@ -196,7 +196,7 @@
         }
 
         .column.valid-target {
-            border: 2px dashed #ffd700;
+            border: 2px dashed rgba(255, 215, 0, 0.6);
             background: rgba(255, 215, 0, 0.1);
             border-radius: 8px;
         }
@@ -778,7 +778,7 @@
 
             /**
              * 渲染回收区
-             * 1个slot，所有完成的序列横着叠放显示
+             * 1个slot，8组牌水平叠放显示
              */
             renderFoundation() {
                 const slots = document.querySelectorAll('.foundation-slot');
@@ -786,17 +786,15 @@
                 const completedCount = this.foundation.length;
 
                 slot.innerHTML = '';
-                slot.classList.remove('completed');
+                slot.classList.add('completed');
 
-                // 横着叠放显示所有完成的序列
                 for (let i = 0; i < completedCount; i++) {
                     const card = this.foundation[i][0];
                     const cardEl = this.createCardElement(card);
                     cardEl.style.position = 'absolute';
-                    cardEl.style.top = '5px';
-                    cardEl.style.left = `${i * 15}px`;
+                    cardEl.style.top = '10px';
+                    cardEl.style.left = `${i * 35}px`;
                     slot.appendChild(cardEl);
-                    slot.classList.add('completed');
                 }
             }
 
@@ -898,20 +896,15 @@
                 const cardId = cardEl.dataset.cardId;
                 const columnCards = this.columns[colIndex];
 
-                // 找到点击的牌在列中的位置
                 let cardIndex = columnCards.findIndex(c => c.id === cardId);
                 if (cardIndex === -1) return;
 
                 const card = columnCards[cardIndex];
 
-                // 只有正面朝上的牌才能操作
                 if (!card.faceUp) {
-                    // 点击背面牌，翻开
-                    this.flipCard(colIndex);
                     return;
                 }
 
-                // 检查是否可以拖动（必须是连续序列的一部分）
                 if (this.isValidDrag(columnCards, cardIndex)) {
                     this.startDrag(e, colIndex, cardIndex);
                 }
@@ -1107,15 +1100,11 @@
 
                 const colIndex = parseInt(column.dataset.colIndex);
 
-                if (this.clickSelection.colIndex !== null && this.clickSelection.colIndex !== colIndex) {
-                    if (this.clickSelection.validTargets.includes(colIndex)) {
-                        this.executeClickMove(colIndex);
-                        return;
-                    }
-                }
-
                 const columnCards = this.columns[colIndex];
-                if (columnCards.length === 0) return;
+                if (columnCards.length === 0) {
+                    this.clearClickSelection();
+                    return;
+                }
 
                 const cardEl = e.target.closest('.card');
                 if (!cardEl) {
@@ -1125,18 +1114,46 @@
 
                 const cardId = cardEl.dataset.cardId;
                 const cardIndex = columnCards.findIndex(c => c.id === cardId);
-                if (cardIndex === -1) return;
+                if (cardIndex === -1) {
+                    this.clearClickSelection();
+                    return;
+                }
 
                 const card = columnCards[cardIndex];
 
                 if (!card.faceUp) {
-                    this.flipCard(colIndex);
+                    this.clearClickSelection();
                     return;
                 }
 
-                if (this.clickSelection.colIndex === colIndex) {
-                    this.clearClickSelection();
-                    return;
+                if (this.clickSelection.colIndex !== null) {
+                    const { colIndex: fromColIndex, cardIndex: fromCardIndex, cards } = this.clickSelection;
+                    const firstCard = cards[0];
+
+                    if (fromColIndex === colIndex) {
+                        this.clearClickSelection();
+                        return;
+                    }
+
+                    const targetColumn = this.columns[colIndex];
+
+                    if (targetColumn.length === 0) {
+                        this.moveCards(fromColIndex, fromCardIndex, colIndex);
+                        this.clearClickSelection();
+                        return;
+                    } else {
+                        const topCard = targetColumn[targetColumn.length - 1];
+                        if (topCard.faceUp && topCard.suit === firstCard.suit && topCard.rank === firstCard.rank + 1) {
+                            this.moveCards(fromColIndex, fromCardIndex, colIndex);
+                            this.clearClickSelection();
+                            return;
+                        } else {
+                            this.showMessage('无法移动到该位置');
+                            this.shakeCard(cardEl);
+                            this.clearClickSelection();
+                            return;
+                        }
+                    }
                 }
 
                 if (!this.isValidDrag(columnCards, cardIndex)) {
@@ -1149,16 +1166,30 @@
 
             /**
              * 选中牌组（点击移动）
+             * 选中点击的牌及其上方所有连续的同花色递减序列
              */
             selectCards(colIndex, cardIndex) {
                 this.clearClickSelection();
 
                 const column = this.columns[colIndex];
-                const cards = column.slice(cardIndex);
+
+                // 从点击位置向上查找连续的同花色递减序列
+                let startIndex = cardIndex;
+                for (let i = cardIndex; i > 0; i--) {
+                    const current = column[i];
+                    const above = column[i - 1];
+                    if (above.faceUp && above.suit === current.suit && above.rank === current.rank + 1) {
+                        startIndex = i - 1;
+                    } else {
+                        break;
+                    }
+                }
+
+                const cards = column.slice(startIndex);
 
                 this.clickSelection = {
                     colIndex,
-                    cardIndex,
+                    cardIndex: startIndex,
                     cards,
                     validTargets: this.findValidTargets(colIndex, cards)
                 };
@@ -1185,7 +1216,7 @@
             }
 
             /**
-             * 高亮点击选中的牌和有效目标
+             * 高亮点击选中的牌和有效目标列
              */
             highlightClickSelection() {
                 const { cards, validTargets } = this.clickSelection;
@@ -1199,6 +1230,17 @@
                     const colEl = document.querySelector(`.column[data-col-index="${colIndex}"]`);
                     if (colEl) colEl.classList.add('valid-target');
                 });
+            }
+
+            /**
+             * 卡片晃动动画（无效移动反馈）
+             */
+            shakeCard(cardEl) {
+                if (!cardEl) return;
+                cardEl.classList.add('invalid-move');
+                setTimeout(() => {
+                    cardEl.classList.remove('invalid-move');
+                }, 300);
             }
 
             /**
