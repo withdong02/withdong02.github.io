@@ -16,6 +16,9 @@
             background: linear-gradient(135deg, #1a4d1a 0%, #0d330d 50%, #0a2a0a 100%);
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             overflow: hidden;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .game-container {
@@ -195,6 +198,7 @@
             width: 100px;
             min-height: 450px;
             position: relative;
+            touch-action: none;
         }
 
         /* 纸牌样式 */
@@ -206,6 +210,8 @@
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            touch-action: none;
+            -webkit-touch-callout: none;
         }
 
         .card-face {
@@ -303,6 +309,7 @@
             z-index: 1001 !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             cursor: grabbing;
+            will-change: left, top;
         }
 
         .card.invalid-move {
@@ -923,7 +930,8 @@
 
                 const column = this.columns[colIndex];
                 const cards = column.slice(cardIndex);
-                const cardEls = e.target.closest('.column').querySelectorAll('.card');
+                const columnEl = document.querySelector(`.column[data-col-index="${colIndex}"]`);
+                const cardEls = columnEl ? columnEl.querySelectorAll('.card') : [];
                 
                 this.dragState = {
                     colIndex,
@@ -1054,7 +1062,19 @@
                 if (e.touches.length !== 1) return;
 
                 const touch = e.touches[0];
-                const cardEl = document.elementFromPoint(touch.clientX, touch.clientY);
+                const x = touch.clientX;
+                const y = touch.clientY;
+
+                // 尝试找到触摸点下的卡片
+                let cardEl = null;
+                const elements = document.elementsFromPoint(x, y);
+                for (const el of elements) {
+                    if (el.classList.contains('card')) {
+                        cardEl = el;
+                        break;
+                    }
+                }
+                
                 if (!cardEl) return;
 
                 const column = cardEl.closest('.column');
@@ -1071,7 +1091,7 @@
                 if (!card.faceUp) return;
 
                 if (this.isValidDrag(columnCards, cardIndex)) {
-                    this.startDrag({ clientX: touch.clientX, clientY: touch.clientY, target: cardEl }, colIndex, cardIndex);
+                    this.startDrag({ clientX: x, clientY: y, target: cardEl }, colIndex, cardIndex);
                 }
             }
 
@@ -1079,14 +1099,16 @@
              * 处理触摸移动
              */
             handleTouchMove(e) {
-                e.preventDefault();
                 if (!this.dragState) return;
+                e.preventDefault();
                 if (e.touches.length !== 1) return;
 
                 const touch = e.touches[0];
+                const x = touch.clientX;
+                const y = touch.clientY;
 
-                const dx = touch.clientX - this.dragState.startX;
-                const dy = touch.clientY - this.dragState.startY;
+                const dx = x - this.dragState.startX;
+                const dy = y - this.dragState.startY;
 
                 this.dragState.offsetX = dx;
                 this.dragState.offsetY = dy;
@@ -1097,7 +1119,7 @@
                     el.style.top = `${pos.top + dy}px`;
                 });
 
-                this.highlightDropTarget(touch.clientX, touch.clientY);
+                this.highlightDropTarget(x, y);
             }
 
             /**
@@ -1108,6 +1130,8 @@
                 if (e.changedTouches.length !== 1) return;
 
                 const touch = e.changedTouches[0];
+                const x = touch.clientX;
+                const y = touch.clientY;
 
                 this.clearHint();
 
@@ -1116,7 +1140,7 @@
                     el.classList.remove('drop-target');
                 });
 
-                const targetCard = this.getCardAtPosition(touch.clientX, touch.clientY);
+                const targetCard = this.getCardAtPosition(x, y);
                 const placed = this.tryPlaceCard(targetCard);
 
                 if (!placed) {
