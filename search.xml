@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>力扣题目分享</title>
+      <link href="/2026/02/15/%E5%8A%9B%E6%89%A3%E9%A2%98%E7%9B%AE%E5%88%86%E4%BA%AB/"/>
+      <url>/2026/02/15/%E5%8A%9B%E6%89%A3%E9%A2%98%E7%9B%AE%E5%88%86%E4%BA%AB/</url>
+      
+        <content type="html"><![CDATA[<p>一切源于一道题目：<a href="https://leetcode.cn/problems/string-to-integer-atoi/description/">8. 字符串转换整数 (atoi) - 力扣（LeetCode）</a></p><p>考虑这样一个问题：给你一个数字字符串，如何在32位环境下安全的处理可能超过<code>[-2^31, 2^31 - 1]</code>范围的数字，不能使用64位变量临时存储。</p><p>因为我熟悉Java， 所以下面提到的数据类型都为 Java 中的数据类型。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer.MAX_VALUE = <span class="number">2</span>^<span class="number">31</span> - <span class="number">1</span> = <span class="number">2147483647</span>;</span><br><span class="line">Integer.MIN_VALUE = -<span class="number">2</span>^<span class="number">31</span> = -<span class="number">2147483648</span>;</span><br></pre></td></tr></table></figure><p>首先题目说不能使用64位变量，所以 Long 类型不能使用，那就一步一步累加，具体思路就是设置两个变量 <code>digit, res</code>，从头到尾遍历字符串每一位，同时计算 <code>res = res * 10 + digit</code>。但这样的话，累加过程中 <code>res</code> 可能会无征兆直接溢出，程序直接抛异常。那怎么办，介绍一下从 <a href="https://leetcode.cn/problems/string-to-integer-atoi/solutions/2361399/8-zi-fu-chuan-zhuan-huan-zheng-shu-atoiq-a2e8/">K神题解</a> 里学来的方法。</p><p>整体思路也是一步一步累加，但提前预判溢出。</p><p>这里有个核心变量 <code>bndry = 2^31 / 10 = 214748364</code>，，它是32位有符号整数最大值去掉最后一位的结果。</p><p>在执行 <code>res = res * 10 + digit</code> 之前，先检查 <code>res</code> 与 <code>bndry</code> 的关系，有下面两种溢出的可能。</p><ul class="lvl-0"><li class="lvl-2"><p>情况一：<code>res &gt; bndry</code> ，意味着 <code>res</code> 乘10后，即使加上最小的数字0，结果也会超过 2147483647，溢出。</p></li><li class="lvl-2"><p>情况二：<code>res == bndry</code>，此时是否溢出取决于要累加的数字  <code>digit</code>。</p><ul class="lvl-2"><li class="lvl-6">如果 <code>digit &lt;= 7</code>，此时正数负数都不会溢出，但等于七对正数来说已经达到最大值。</li><li class="lvl-6">如果 <code>digit = 8</code>，拼接后值为 2147483648，比 <code>Integer.MAX_VALUE</code> 大 1，而负数即 -2147483648 还未溢出。</li><li class="lvl-6">如果 <code>digit &gt; 8</code>，正数负数都溢出。</li></ul></li></ul><p>思路还是很清晰的，在下一位拼接前进行判断可以很好的避开溢出问题。下面看一下题解代码</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">myAtoi</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        <span class="type">char</span>[] chars = s.trim().toCharArray();</span><br><span class="line">        <span class="keyword">if</span> (chars.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">bndry</span> <span class="operator">=</span> Integer.MAX_VALUE / <span class="number">10</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>, sign = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (chars[<span class="number">0</span>] == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">            sign = -<span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (chars[<span class="number">0</span>] != <span class="string">&#x27;+&#x27;</span>) &#123;</span><br><span class="line">            i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> i; j &lt; chars.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (chars[j] &lt; <span class="string">&#x27;0&#x27;</span> || chars[j] &gt; <span class="string">&#x27;9&#x27;</span>) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (res &gt; bndry || (res == bndry &amp;&amp; chars[j] &gt; <span class="string">&#x27;7&#x27;</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> sign == <span class="number">1</span> ? Integer.MAX_VALUE : Integer.MIN_VALUE;</span><br><span class="line">            &#125;</span><br><span class="line">            res = res * <span class="number">10</span> + chars[j] - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sign * res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>判断条件 <code>chars[j] &gt; '7'</code> 对正数和负数同样有效。当 <code>digit = 8</code> 时，正数已溢出，返回 <code>Integer.MAX_VALUE</code>；负数虽然未溢出，但此时返回 <code>Integer.MIN_VALUE</code> 恰好就是正确结果。</p><p>其实除了下面的溢出判断，K神对首字符的处理也很妙，大佬不愧是大佬。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+            <tag> 力扣 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Java集合源码阅读</title>
       <link href="/2026/01/26/Java%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
       <url>/2026/01/26/Java%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/</url>
