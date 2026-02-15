@@ -4,6 +4,28 @@
     <meta charset="UTF-8">
     <title>蜘蛛纸牌 - 单花色</title>
     <style>
+        :root {
+            --scale: 1;
+            --card-width: 100px;
+            --card-height: 145px;
+            --column-width: 100px;
+            --card-offset: 30px;
+            --font-size-base: 1;
+        }
+
+        @media (max-width: 1200px) {
+            :root { --scale: 0.9; --card-width: 90px; --card-height: 130px; --column-width: 90px; --card-offset: 27px; }
+        }
+        @media (max-width: 992px) {
+            :root { --scale: 0.8; --card-width: 80px; --card-height: 116px; --column-width: 80px; --card-offset: 24px; }
+        }
+        @media (max-width: 768px) {
+            :root { --scale: 0.7; --card-width: 70px; --card-height: 101px; --column-width: 70px; --card-offset: 21px; }
+        }
+        @media (max-width: 576px) {
+            :root { --scale: 0.6; --card-width: 60px; --card-height: 87px; --column-width: 60px; --card-offset: 18px; }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -25,43 +47,43 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            padding: 10px;
+            padding: calc(10px * var(--scale));
         }
 
         .toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 15px;
-            margin-bottom: 5px;
+            padding: calc(5px * var(--scale)) calc(15px * var(--scale));
+            margin-bottom: calc(5px * var(--scale));
         }
 
         .toolbar-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: calc(15px * var(--scale));
         }
 
         .timer {
             color: #fff;
-            font-size: 14px;
+            font-size: calc(14px * var(--scale));
             font-family: monospace;
             background: rgba(0,0,0,0.3);
-            padding: 4px 10px;
+            padding: calc(4px * var(--scale)) calc(10px * var(--scale));
             border-radius: 4px;
         }
 
         .toolbar-right {
             display: flex;
-            gap: 8px;
+            gap: calc(8px * var(--scale));
         }
 
         .toolbar-btn {
             background: rgba(0,0,0,0.3);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            font-size: 12px;
+            padding: calc(4px * var(--scale)) calc(12px * var(--scale));
+            font-size: calc(12px * var(--scale));
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
@@ -82,129 +104,23 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            gap: 8px;
-            padding: 0 20px;
-            padding-top: 40px;
-        }
-
-        .column {
-            width: 90px;
-            min-height: 400px;
-            position: relative;
-        }
-
-        /* 底部区域：回收区和发牌区 */
-        .bottom-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            height: 140px;
-            padding: 10px 20px;
-        }
-
-        /* 回收区 - 左下角 */
-        .foundation {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            border: 2px solid rgba(255, 215, 0, 0.5);
-            border-radius: 8px;
-        }
-
-        .foundation-slot {
-            min-width: 350px;
-            width: auto;
-            height: 130px;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .foundation-slot.completed {
-            border: none;
-            background: transparent;
-        }
-
-        .foundation-slot .card {
-            width: 80px;
-            height: 110px;
-            position: absolute;
-        }
-
-        .foundation-slot .card .card-face {
-            padding: 5px;
-        }
-
-        .foundation-slot .card .card-corner .card-rank {
-            font-size: 16px;
-        }
-
-        .foundation-slot .card .card-corner .card-suit-small {
-            font-size: 12px;
-        }
-
-        .foundation-slot .card .card-center {
-            font-size: 36px;
-        }
-
-        /* 发牌区 - 右下角 */
-        .stock-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .stock-pile {
-            width: 100px;
-            height: 145px;
-            position: relative;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        .stock-pile.disabled {
-            cursor: not-allowed;
-            opacity: 0.4;
-        }
-
-        .stock-pile:not(.disabled):hover {
-            transform: scale(1.05);
-        }
-
-        .stock-count {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 14px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        /* 游戏主区域：10列牌 */
-        .game-board {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            padding: 0 20px;
+            gap: calc(8px * var(--scale));
+            padding: 0 calc(20px * var(--scale));
+            padding-top: calc(10px * var(--scale));
             touch-action: none;
         }
 
         .column {
-            width: 100px;
-            min-height: 450px;
+            width: var(--column-width);
+            min-height: calc(450px * var(--scale));
             position: relative;
             touch-action: none;
         }
 
         /* 纸牌样式 */
         .card {
-            width: 100px;
-            height: 145px;
+            width: var(--card-width);
+            height: var(--card-height);
             border-radius: 8px;
             position: absolute;
             cursor: pointer;
@@ -221,7 +137,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 10px;
+            padding: calc(10px * var(--scale));
             background: #fff;
             border: 1px solid #ccc;
         }
@@ -242,8 +158,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 70px;
-            height: 100px;
+            width: calc(70px * var(--scale));
+            height: calc(100px * var(--scale));
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
             background: repeating-linear-gradient(
@@ -280,13 +196,13 @@
         }
 
         .card-rank {
-            font-size: 22px;
+            font-size: calc(22px * var(--scale));
             font-weight: bold;
             color: #000;
         }
 
         .card-suit-small {
-            font-size: 16px;
+            font-size: calc(16px * var(--scale));
             color: #000;
         }
 
@@ -295,7 +211,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 54px;
+            font-size: calc(54px * var(--scale));
             color: #000;
         }
 
@@ -350,6 +266,95 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        /* 底部区域：回收区和发牌区 */
+        .bottom-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: calc(140px * var(--scale));
+            padding: calc(10px * var(--scale)) calc(20px * var(--scale));
+        }
+
+        /* 回收区 - 左下角 */
+        .foundation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: calc(10px * var(--scale));
+        }
+
+        .foundation-slot {
+            min-width: calc(350px * var(--scale));
+            width: auto;
+            height: calc(130px * var(--scale));
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .foundation-slot.completed {
+            border: none;
+            background: transparent;
+        }
+
+        .foundation-slot .card {
+            width: calc(80px * var(--scale));
+            height: calc(110px * var(--scale));
+            position: absolute;
+        }
+
+        .foundation-slot .card .card-face {
+            padding: calc(5px * var(--scale));
+        }
+
+        .foundation-slot .card .card-corner .card-rank {
+            font-size: calc(16px * var(--scale));
+        }
+
+        .foundation-slot .card .card-corner .card-suit-small {
+            font-size: calc(12px * var(--scale));
+        }
+
+        .foundation-slot .card .card-center {
+            font-size: calc(36px * var(--scale));
+        }
+
+        /* 发牌区 - 右下角 */
+        .stock-area {
+            display: flex;
+            align-items: center;
+            gap: calc(10px * var(--scale));
+            padding: calc(10px * var(--scale));
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .stock-pile {
+            width: calc(100px * var(--scale));
+            height: calc(145px * var(--scale));
+            position: relative;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .stock-pile.disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+        }
+
+        .stock-pile:not(.disabled):hover {
+            transform: scale(1.05);
+        }
+
+        .stock-count {
+            position: absolute;
+            bottom: calc(-25px * var(--scale));
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: calc(14px * var(--scale));
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
         /* 胜利弹窗 */
         .modal {
             display: none;
@@ -371,7 +376,7 @@
 
         .modal-content {
             background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%);
-            padding: 40px 60px;
+            padding: calc(40px * var(--scale)) calc(60px * var(--scale));
             border-radius: 15px;
             text-align: center;
             border: 3px solid #4a7c23;
@@ -380,8 +385,8 @@
 
         .modal-title {
             color: #ffd700;
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: calc(36px * var(--scale));
+            margin-bottom: calc(20px * var(--scale));
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
@@ -389,12 +394,12 @@
             background: linear-gradient(135deg, #4a7c23 0%, #3d6a1c 100%);
             color: #fff;
             border: 2px solid #6ba332;
-            padding: 12px 40px;
-            font-size: 18px;
+            padding: calc(12px * var(--scale)) calc(40px * var(--scale));
+            font-size: calc(18px * var(--scale));
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 20px;
+            margin-top: calc(20px * var(--scale));
         }
 
         .modal-btn:hover {
@@ -405,14 +410,14 @@
         /* 提示信息 */
         .message {
             position: fixed;
-            top: 20px;
+            top: calc(20px * var(--scale));
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
             color: #fff;
-            padding: 10px 20px;
+            padding: calc(10px * var(--scale)) calc(20px * var(--scale));
             border-radius: 5px;
-            font-size: 14px;
+            font-size: calc(14px * var(--scale));
             opacity: 0;
             transition: opacity 0.3s;
             z-index: 1500;
@@ -423,24 +428,92 @@
         }
 
         .modal-content.small {
-            padding: 25px 40px;
+            padding: calc(25px * var(--scale)) calc(40px * var(--scale));
         }
 
         .modal-content.small .modal-title {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: calc(24px * var(--scale));
+            margin-bottom: calc(10px * var(--scale));
         }
 
         .modal-content.small .modal-text {
             color: #fff;
-            font-size: 14px;
-            margin-bottom: 20px;
+            font-size: calc(14px * var(--scale));
+            margin-bottom: calc(20px * var(--scale));
         }
 
         .modal-btn.small {
-            padding: 8px 20px;
-            font-size: 14px;
-            margin: 0 5px;
+            padding: calc(8px * var(--scale)) calc(20px * var(--scale));
+            font-size: calc(14px * var(--scale));
+            margin: 0 calc(5px * var(--scale));
+        }
+
+        /* 横屏提示覆盖层 */
+        .orientation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a4d1a 0%, #0d330d 50%, #0a2a0a 100%);
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            flex-direction: column;
+            gap: calc(30px * var(--scale));
+        }
+
+        .orientation-modal.show {
+            display: flex;
+        }
+
+        .orientation-icon {
+            font-size: calc(80px * var(--scale));
+            animation: rotatePhone 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotatePhone {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            75% { transform: rotate(90deg); }
+        }
+
+        .orientation-text {
+            color: #fff;
+            font-size: calc(20px * var(--scale));
+            text-align: center;
+            padding: 0 calc(20px * var(--scale));
+        }
+
+        .orientation-btns {
+            display: flex;
+            gap: calc(20px * var(--scale));
+        }
+
+        .orientation-btn {
+            padding: calc(15px * var(--scale)) calc(30px * var(--scale));
+            font-size: calc(16px * var(--scale));
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .orientation-btn.landscape {
+            background: linear-gradient(135deg, #4a7c23 0%, #3d6a1c 100%);
+            color: #fff;
+            border: 2px solid #6ba332;
+        }
+
+        .orientation-btn.portrait {
+            background: rgba(255,255,255,0.1);
+            color: #aaa;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .orientation-btn:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -451,8 +524,6 @@
                 <span class="timer" id="timer">用时：0分0秒</span>
             </div>
             <div class="toolbar-right">
-                <button class="toolbar-btn" id="hintBtn">💡 提示 (3)</button>
-                <button class="toolbar-btn" id="undoBtn">↩️ 撤销 (3)</button>
                 <button class="toolbar-btn" id="restartBtn">🔄 重玩</button>
             </div>
         </div>
@@ -480,9 +551,8 @@
     <!-- 胜利弹窗 -->
     <div class="modal" id="winModal">
         <div class="modal-content">
-            <h1 class="modal-title">恭喜通关！</h1>
-            <p style="color: #fff; font-size: 18px;">您已收集8组K-A序列</p>
-            <p style="color: #ffd700; font-size: 16px; margin-top: 10px;" id="winTime"></p>
+            <h1 class="modal-title">恭喜通关</h1>
+            <p style="color: #fff; font-size: 18px;">withdong02@qq.com</p>
             <button class="modal-btn" onclick="game.restart()">再来一局</button>
         </div>
     </div>
@@ -493,7 +563,6 @@
             <h2 class="modal-title" style="color: #ff6b6b;">无法移动</h2>
             <p class="modal-text">发牌区已发完，且没有可移动的牌组</p>
             <div>
-                <button class="modal-btn small" id="deadlockUndoBtn">↩️ 撤销</button>
                 <button class="modal-btn small" onclick="game.restart()">🔄 重玩</button>
             </div>
         </div>
@@ -501,6 +570,16 @@
 
     <!-- 提示信息 -->
     <div class="message" id="message"></div>
+
+    <!-- 横屏提示覆盖层 -->
+    <div class="orientation-modal" id="orientationModal">
+        <div class="orientation-icon">📱</div>
+        <div class="orientation-text">建议横屏游玩，<br>体验更佳！</div>
+        <div class="orientation-btns">
+            <button class="orientation-btn landscape" id="rotateBtn">🔄 切换横屏</button>
+            <button class="orientation-btn portrait" id="keepPortraitBtn">保持竖屏</button>
+        </div>
+    </div>
 
     <script>
         /**
@@ -530,10 +609,6 @@
                 this.dealCount = 0;
                 this.timerInterval = null;
                 this.startTime = null;
-                this.undoCount = 3;
-                this.hintCount = 3;
-                this.lastState = null;
-                this.hintElements = [];
                 this.init();
             }
 
@@ -544,13 +619,10 @@
                 this.createDeck();
                 this.shuffleDeck();
                 this.dealInitialCards();
-                this.undoCount = 3;
-                this.hintCount = 3;
-                this.lastState = null;
                 this.render();
                 this.bindEvents();
                 this.startTimer();
-                this.updateToolbar();
+                this.checkOrientation();
             }
 
             /**
@@ -633,16 +705,29 @@
                     colEl.className = 'column';
                     colEl.dataset.colIndex = colIndex;
                     
+                    let currentTop = 0;
+                    
                     column.forEach((card, cardIndex) => {
                         const cardEl = this.createCardElement(card);
-                        cardEl.style.top = `${cardIndex * 30}px`;
+                        const computedStyle = getComputedStyle(document.documentElement);
+                        const baseOffset = parseFloat(computedStyle.getPropertyValue('--card-offset')) || 30;
+                        const cardOffset = column.length > 15 
+                            ? Math.max(baseOffset * 0.5, baseOffset - (column.length - 15)) 
+                            : baseOffset;
+                        const offset = card.faceUp ? cardOffset : 18;
+                        
+                        cardEl.style.top = `${currentTop}px`;
                         cardEl.style.zIndex = cardIndex;
+                        currentTop += offset;
                         colEl.appendChild(cardEl);
                     });
                     
                     if (column.length === 0) {
+                        const computedStyle = getComputedStyle(document.documentElement);
+                        const colWidth = parseFloat(computedStyle.getPropertyValue('--column-width')) || 100;
+                        const colHeight = parseFloat(computedStyle.getPropertyValue('--card-height')) || 145;
                         const placeholder = document.createElement('div');
-                        placeholder.style.cssText = 'width:100px;height:145px;border:2px dashed rgba(255,255,255,0.3);border-radius:8px;position:absolute;top:0;left:0;';
+                        placeholder.style.cssText = `width:${colWidth}px;height:${colHeight}px;border:2px dashed rgba(255,255,255,0.3);border-radius:8px;position:absolute;top:0;left:0;`;
                         colEl.appendChild(placeholder);
                     }
                     
@@ -690,8 +775,10 @@
                 slot.innerHTML = '';
                 const completedCount = this.foundation.length;
                 
-                const cardWidth = 80;
-                const cardSpacing = 35;
+                const computedStyle = getComputedStyle(document.documentElement);
+                const scale = parseFloat(computedStyle.getPropertyValue('--scale')) || 1;
+                const cardWidth = 80 * scale;
+                const cardSpacing = 35 * scale;
                 const slotWidth = completedCount * cardWidth + (completedCount - 1) * cardSpacing;
                 slot.style.width = `${slotWidth}px`;
                 
@@ -699,7 +786,7 @@
                     const card = this.foundation[i][0];
                     const cardEl = this.createCardElement(card);
                     cardEl.style.position = 'absolute';
-                    cardEl.style.top = '10px';
+                    cardEl.style.top = `${10 * scale}px`;
                     cardEl.style.left = `${i * cardSpacing}px`;
                     slot.appendChild(cardEl);
                 }
@@ -783,21 +870,61 @@
                     this.handleTouchEnd(e);
                 });
 
-                document.getElementById('hintBtn').addEventListener('click', () => {
-                    this.showHint();
-                });
-
-                document.getElementById('undoBtn').addEventListener('click', () => {
-                    this.undo();
-                });
-
                 document.getElementById('restartBtn').addEventListener('click', () => {
                     this.restart();
                 });
 
-                document.getElementById('deadlockUndoBtn').addEventListener('click', () => {
-                    this.undo();
+                document.getElementById('rotateBtn').addEventListener('click', () => {
+                    this.requestLandscape();
                 });
+
+                document.getElementById('keepPortraitBtn').addEventListener('click', () => {
+                    this.keepPortrait();
+                });
+            }
+
+            /**
+             * 检测是否需要显示横屏提示
+             */
+            checkOrientation() {
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (!isMobile) return;
+                
+                if (window.innerHeight > window.innerWidth) {
+                    document.getElementById('orientationModal').classList.add('show');
+                }
+            }
+
+            /**
+             * 请求横屏
+             */
+            async requestLandscape() {
+                if (screen.orientation && screen.orientation.lock) {
+                    try {
+                        await screen.orientation.lock('landscape');
+                        document.getElementById('orientationModal').classList.remove('show');
+                    } catch (e) {
+                        this.showRotateHint();
+                    }
+                } else {
+                    this.showRotateHint();
+                }
+            }
+
+            /**
+             * 显示旋转提示
+             */
+            showRotateHint() {
+                document.getElementById('orientationModal').classList.remove('show');
+                this.showMessage('请手动旋转手机至横屏');
+            }
+
+            /**
+             * 保持竖屏选择
+             */
+            keepPortrait() {
+                document.getElementById('orientationModal').classList.remove('show');
             }
 
             /**
@@ -860,8 +987,6 @@
                     this.showMessage('没有更多牌了');
                     return;
                 }
-
-                this.saveState();
 
                 for (let col = 0; col < 10; col++) {
                     if (this.stock.length > 0) {
@@ -926,8 +1051,6 @@
              * 开始拖拽
              */
             startDrag(e, colIndex, cardIndex) {
-                this.clearHint();
-
                 const column = this.columns[colIndex];
                 const cards = column.slice(cardIndex);
                 const columnEl = document.querySelector(`.column[data-col-index="${colIndex}"]`);
@@ -1031,8 +1154,6 @@
             handleMouseUp(e) {
                 if (!this.dragState) return;
 
-                this.clearHint();
-
                 this.dragState.cardEls.forEach(el => {
                     el.classList.remove('dragging');
                     el.classList.remove('drop-target');
@@ -1132,8 +1253,6 @@
                 const touch = e.changedTouches[0];
                 const x = touch.clientX;
                 const y = touch.clientY;
-
-                this.clearHint();
 
                 this.dragState.cardEls.forEach(el => {
                     el.classList.remove('dragging');
@@ -1292,7 +1411,6 @@
                     
                     if (this.completedCount >= 8) {
                         this.stopTimer();
-                        document.getElementById('winTime').textContent = `用时：${this.getElapsedTime()}`;
                         document.getElementById('winModal').classList.add('show');
                     }
                     this.checkSequences();
@@ -1309,16 +1427,6 @@
             }
 
             /**
-             * 清除提示
-             */
-            clearHint() {
-                this.hintElements.forEach(el => {
-                    if (el) el.classList.remove('hint-highlight');
-                });
-                this.hintElements = [];
-            }
-
-            /**
              * 显示提示信息
              */
             showMessage(text) {
@@ -1329,38 +1437,28 @@
             }
 
             /**
-             * 保存当前状态
+             * 移动牌组
              */
-            saveState() {
-                if (this.undoCount <= 0) return;
-                this.lastState = {
-                    columns: this.columns.map(col => col.map(c => ({...c}))),
-                    stock: this.stock.map(c => ({...c})),
-                    foundation: this.foundation.map(seq => seq.map(c => ({...c}))),
-                    completedCount: this.completedCount,
-                    dealCount: this.dealCount
-                };
-            }
+            moveCards(fromColIndex, fromCardIndex, toColIndex) {
+                const cards = this.columns[fromColIndex].splice(fromCardIndex);
+                this.columns[toColIndex].push(...cards);
 
-            /**
-             * 撤销上一步
-             */
-            undo() {
-                if (!this.lastState || this.undoCount <= 0) return;
-                this.columns = this.lastState.columns.map(col => col.map(c => ({...c})));
-                this.stock = this.lastState.stock.map(c => ({...c}));
-                this.foundation = this.lastState.foundation.map(seq => seq.map(c => ({...c})));
-                this.completedCount = this.lastState.completedCount;
-                this.dealCount = this.lastState.dealCount;
-                this.lastState = null;
-                this.undoCount--;
+                const fromColumn = this.columns[fromColIndex];
+                if (fromColumn.length > 0) {
+                    const topCard = fromColumn[fromColumn.length - 1];
+                    if (!topCard.faceUp) {
+                        topCard.faceUp = true;
+                    }
+                }
+
                 this.render();
-                this.updateToolbar();
-                document.getElementById('deadlockModal').classList.remove('show');
+                this.checkSequences();
+                this.updateStockPileState();
+                this.checkDeadlock();
             }
 
             /**
-             * 查找所有可能的移动
+             * 检测牌是否连续递减
              */
             findPossibleMoves() {
                 const moves = [];
@@ -1398,55 +1496,11 @@
             }
 
             /**
-             * 显示提示
-             */
-            showHint() {
-                if (this.hintCount <= 0) {
-                    this.showMessage('提示次数已用完');
-                    return;
-                }
-
-                this.clearHint();
-                this.hintCount--;
-                this.updateToolbar();
-                this.showMessage('提示可用');
-
-                const moves = this.findPossibleMoves();
-                if (moves.length === 0) {
-                    this.showMessage('没有可用的移动');
-                    return;
-                }
-
-                const move = moves[Math.floor(Math.random() * moves.length)];
-                const card = this.columns[move.fromCol][move.cardIndex];
-                
-                const cardEl = document.querySelector(`[data-card-id="${card.id}"]`);
-                if (cardEl) {
-                    cardEl.classList.add('hint-highlight');
-                    this.hintElements.push(cardEl);
-                }
-
-                const targetCard = this.columns[move.toCol].length > 0 
-                    ? this.columns[move.toCol][this.columns[move.toCol].length - 1]
-                    : null;
-                
-                if (targetCard) {
-                    const targetEl = document.querySelector(`[data-card-id="${targetCard.id}"]`);
-                    if (targetEl) {
-                        targetEl.classList.add('hint-highlight');
-                        this.hintElements.push(targetEl);
-                    }
-                }
-
-                setTimeout(() => {
-                    this.clearHint();
-                }, 3000);
-            }
-
-            /**
              * 检查死锁
              */
             checkDeadlock() {
+                if (this.completedCount >= 8) return;
+
                 if (this.stock.length > 0) return;
 
                 const canDeal = this.columns.every(col => 
@@ -1464,24 +1518,6 @@
             }
 
             /**
-             * 更新工具栏状态
-             */
-            updateToolbar() {
-                const hintBtn = document.getElementById('hintBtn');
-                const undoBtn = document.getElementById('undoBtn');
-
-                if (hintBtn) {
-                    hintBtn.textContent = `💡 提示 (${this.hintCount})`;
-                    hintBtn.disabled = this.hintCount <= 0;
-                }
-
-                if (undoBtn) {
-                    undoBtn.textContent = `↩️ 撤销 (${this.undoCount})`;
-                    undoBtn.disabled = this.undoCount <= 0 || !this.lastState;
-                }
-            }
-
-            /**
              * 重新开始游戏
              */
             restart() {
@@ -1495,17 +1531,12 @@
                 this.selectedCard = null;
                 this.completedCount = 0;
                 this.dealCount = 0;
-                this.undoCount = 3;
-                this.hintCount = 3;
-                this.lastState = null;
-                this.clearHint();
 
                 this.createDeck();
                 this.shuffleDeck();
                 this.dealInitialCards();
                 this.render();
                 this.startTimer();
-                this.updateToolbar();
             }
         }
 
